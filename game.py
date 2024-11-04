@@ -93,32 +93,39 @@ class Game:
     def round(self):
         have_winner = False
         while not have_winner:
-            self.field.display_plain()
-            position = int(input(f"{self.player.nickname} choose a position 1-9: "))
 
-            if self.field.check_coordinate(position, self.player.action, ):
+            input_ok = False
+            while not input_ok:
 
-                winner = self.check_winner()
-                if winner:
-                    self.field.display_plain()
-                    if winner == "Draw":
-                        print("it's a tie!")
-                    else:
-                        print(f"{self.player.nickname} wins!")
-                    break
+                self.field.display_plain()
+                position = int(input(f"{self.player.nickname} choose a position 1-9: "))
+                if self.field.check_coordinate(position, self.player.action, ):
+                    input_ok = True
+                    winner = self.check_winner()
+                    if winner:
+                        self.field.display_plain()
+                        if winner == "Draw":
+                            print("it's a tie!")
+                        else:
+                            print(f"{self.player.nickname} wins!")
+                        break
 
-            else:
-                print("Invalid! Try again.")
-            npc_position = self.npc.get_random_action()
-            if self.field.check_coordinate(npc_position, self.npc.action):
-                winner = self.check_winner()
-                if winner:
-                    self.field.display_plain()
-                    if winner == "Draw":
-                        print("it's a tie!")
-                    else:
-                        print(f"{self.npc.nickname} wins!")
-                    break
+                else:
+
+                    print("Invalid! Try again.")
+            npc_input_ok = False
+            while not npc_input_ok:
+                npc_position = self.npc.get_random_action()
+                if self.field.check_coordinate(npc_position, self.npc.action):
+                    npc_input_ok = True
+                    winner = self.check_winner()
+                    if winner:
+                        self.field.display_plain()
+                        if winner == "Draw":
+                            print("it's a tie!")
+                        else:
+                            print(f"{self.npc.nickname} wins!")
+                        break
 
 
 print("Welcome to tic tac toe!")
@@ -126,3 +133,5 @@ player_1 = Player(nickname=input("Enter your nickname: "))
 player_2 = Player(nickname="npc", is_npc=True)
 
 Game(player_1, player_2)
+
+# flagi = ir boolean vertibas(true or false) kuri mainigies sakas ar on off etc., to varam kontroloet while loops(while loop strada pec trigera)
