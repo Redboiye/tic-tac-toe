@@ -107,7 +107,8 @@ class Game:
 
                 field.display_plain()
                 position = input(f"{self.player.nickname} choose a position 1-9: ")
-                if not position.isnumeric():
+                if not position.isnumeric() or int(position) < 1 or int(position) > 9:
+                    print("invalid position")
                     continue
 
                 if field.check_coordinate(position, self.player.action):
