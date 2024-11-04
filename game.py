@@ -94,12 +94,9 @@ class Game:
         have_winner = False
         while not have_winner:
             self.field.display_plain()
-            if self.player.is_npc:
-                position = self.npc.get_random_action()
-            else:
-                position = int(input(f"{self.player.nickname} choose a position 1-9: "))
+            position = int(input(f"{self.player.nickname} choose a position 1-9: "))
 
-            if self.field.check_coordinate(position, self.player.action):
+            if self.field.check_coordinate(position, self.player.action, ):
 
                 winner = self.check_winner()
                 if winner:
@@ -107,11 +104,21 @@ class Game:
                     if winner == "Draw":
                         print("it's a tie!")
                     else:
-                        print(f"{self.player} wins!")
+                        print(f"{self.player.nickname} wins!")
                     break
 
             else:
                 print("Invalid! Try again.")
+            npc_position = self.npc.get_random_action()
+            if self.field.check_coordinate(npc_position, self.npc.action):
+                winner = self.check_winner()
+                if winner:
+                    self.field.display_plain()
+                    if winner == "Draw":
+                        print("it's a tie!")
+                    else:
+                        print(f"{self.npc.nickname} wins!")
+                    break
 
 
 print("Welcome to tic tac toe!")
