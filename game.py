@@ -2,16 +2,19 @@ import random
 
 
 class Field:
-    plain = [
-        ["_", "_", "_"],
-        ["_", "_", "_"],
-        ["_", "_", "_"],
-    ]
-    plain_coordinates = [
-        ["1", "2", "3"],
-        ["4", "5", "6"],
-        ["7", "8", "9"],
-    ]
+
+    def __init__(self):
+
+        self.plain = [
+            ["_", "_", "_"],
+            ["_", "_", "_"],
+            ["_", "_", "_"],
+        ]
+        self.plain_coordinates = [
+            ["1", "2", "3"],
+            ["4", "5", "6"],
+            ["7", "8", "9"],
+        ]
 
     def display_plain(self):
         x, y, z = 1, 2, 3
@@ -53,12 +56,12 @@ class Game:
     )
 
     def __init__(self, player: Player, npc: Player):
-        self.field = Field()
         self.player = player
         self.npc = npc
         self.intro()
 
     def intro(self):
+
         have_action = False
         while not have_action:
 
@@ -85,8 +88,9 @@ class Game:
                 if round_finished:
                     have_action = False
 
-    def check_winner(self):
-        board = [cell for row in self.field.plain for cell in row]
+    def check_winner(self, field):
+
+        board = [cell for row in field.plain for cell in row]
         for combo in self.WINNING_COMBOS:
             if board[combo[0]] == board[combo[1]] == board[combo[2]] != "_":
                 return board[combo[0]]
@@ -94,20 +98,20 @@ class Game:
             return "Draw"
         return None
 
-    def round(self):
-
+    def round(self, ):
+        field = Field()
         while True:
 
             input_ok = False
             while not input_ok:
 
-                self.field.display_plain()
+                field.display_plain()
                 position = int(input(f"{self.player.nickname} choose a position 1-9: "))
-                if self.field.check_coordinate(position, self.player.action, ):
+                if field.check_coordinate(position, self.player.action):
                     input_ok = True
-                    winner = self.check_winner()
+                    winner = self.check_winner(field)
                     if winner:
-                        self.field.display_plain()
+                        field.display_plain()
                         if winner == "Draw":
                             print("it's a tie!")
                         else:
@@ -122,11 +126,11 @@ class Game:
             npc_input_ok = False
             while not npc_input_ok:
                 npc_position = self.npc.get_random_action()
-                if self.field.check_coordinate(npc_position, self.npc.action):
+                if field.check_coordinate(npc_position, self.npc.action):
                     npc_input_ok = True
-                    winner = self.check_winner()
+                    winner = self.check_winner(field)
                     if winner:
-                        self.field.display_plain()
+                        field.display_plain()
                         if winner == "Draw":
                             print("it's a tie!")
                         else:
