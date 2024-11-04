@@ -61,6 +61,7 @@ class Game:
     def intro(self):
         have_action = False
         while not have_action:
+
             self.player.action = input(f"{self.player.nickname}, choose X or O: ")
             if self.player.action == "X":
                 self.npc.action = "O"
@@ -79,7 +80,10 @@ class Game:
                     f" {self.npc.nickname} has chosen {self.npc.action}"
                 )
                 have_action = True
-                self.round()
+                round_finished = self.round()
+
+                if round_finished:
+                    have_action = False
 
     def check_winner(self):
         board = [cell for row in self.field.plain for cell in row]
@@ -91,8 +95,8 @@ class Game:
         return None
 
     def round(self):
-        have_winner = False
-        while not have_winner:
+
+        while True:
 
             input_ok = False
             while not input_ok:
@@ -107,8 +111,10 @@ class Game:
                         if winner == "Draw":
                             print("it's a tie!")
                         else:
+
                             print(f"{self.player.nickname} wins!")
-                        break
+
+                        return True
 
                 else:
 
@@ -124,8 +130,9 @@ class Game:
                         if winner == "Draw":
                             print("it's a tie!")
                         else:
+
                             print(f"{self.npc.nickname} wins!")
-                        break
+                        return True
 
 
 print("Welcome to tic tac toe!")
