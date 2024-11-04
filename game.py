@@ -29,7 +29,7 @@ class Field:
 
     # logika kas nosaka speletaja, simbola poziciju un plaina
     def check_coordinate(self, position, symbol):
-        row, col = divmod(position - 1, 3)
+        row, col = divmod(int(position) - 1, 3)
         if self.plain[row][col] == "_":
             self.plain[row][col] = symbol
             return True
@@ -106,7 +106,10 @@ class Game:
             while not input_ok:
 
                 field.display_plain()
-                position = int(input(f"{self.player.nickname} choose a position 1-9: "))
+                position = input(f"{self.player.nickname} choose a position 1-9: ")
+                if not position.isnumeric():
+                    continue
+
                 if field.check_coordinate(position, self.player.action):
                     input_ok = True
                     winner = self.check_winner(field)
