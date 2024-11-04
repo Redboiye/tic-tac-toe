@@ -7,20 +7,50 @@ class Field:
         ["_", "_", "_"],
         ["_", "_", "_"],
     ]
+    plain_coordinates = [
+        ["1", "2", "3"],
+        ["4", "5", "6"],
+        ["7", "8", "9"],
+    ]
+
+    def display_plain(self):
+        x, y, z = 1, 2, 3
+
+        rows = len(self.plain)
+        for r in range(rows):
+            # print(self.plain_coordinates[r][0], "|", self.plain_coordinates[r][1], "|", self.plain_coordinates[r][2])
+            print(self.plain[r][0], "|", self.plain[r][1], "|", self.plain[r][2], f"   {x}|{y}|{z}   ")
+            x += 3
+            y += 3
+            z += 3
+
+    # logika kas nosaka speletaja, simbola poziciju un plaina
+    def check_coordinate(self, position, symbol):
+        row, col = divmod(position - 1, 3)
+        if self.plain[row][col] == "_":
+            self.plain[row][col] = symbol
+            return True
+        return False
 
 
 class Player:
-    action: str
 
     def __init__(self, nickname, is_npc=False):
         self.is_npc = is_npc
         self.nickname = nickname
+        self.action = None
 
-    def get_random_action(self):
-        pass
+    @staticmethod
+    def get_random_action():
+        return random.choice(range(1, 9))
 
 
 class Game:
+    WINNING_COMBOS = (
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],  # Hor
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],  # Ver
+        [0, 4, 8], [2, 4, 6],  # Dia
+    )
 
     def __init__(self, player: Player, npc: Player):
         self.field = Field()
@@ -42,7 +72,6 @@ class Game:
                 print("only choose X or O")
                 continue
 
-
             if self.player.action and self.npc.action:
                 print(
                     f"{self.player.nickname} has chosen"
@@ -52,14 +81,37 @@ class Game:
                 have_action = True
                 self.round()
 
-            else:
-                print("Invalid! Try again.")
+    def check_winner(self):
+        board = [cell for row in self.field.plain for cell in row]
+        for combo in self.WINNING_COMBOS:
+            if board[combo[0]] == board[combo[1]] == board[combo[2]] != "_":
+                return board[combo[0]]
+        if "_" not in board:
+            return "Draw"
+        return None
 
     def round(self):
         have_winner = False
-        print(self.field.plain)
         while not have_winner:
-            pass
+            self.field.display_plain()
+            if self.player.is_npc:
+                position = self.npc.get_random_action()
+            else:
+                position = int(input(f"{self.player.nickname} choose a position 1-9: "))
+
+            if self.field.check_coordinate(position, self.player.action):
+
+                winner = self.check_winner()
+                if winner:
+                    self.field.display_plain()
+                    if winner == "Draw":
+                        print("it's a tie!")
+                    else:
+                        print(f"{self.player} wins!")
+                    break
+
+            else:
+                print("Invalid! Try again.")
 
 
 print("Welcome to tic tac toe!")
