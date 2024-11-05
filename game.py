@@ -44,7 +44,7 @@ class Player:
         self.action = None
 
     @staticmethod
-    def get_random_action():
+    def npc_make_action():
         return random.choice(range(1, 9))
 
 
@@ -61,17 +61,13 @@ class Game:
         self.intro()
 
     def intro(self):
-
         have_action = False
         while not have_action:
-
             self.player.action = input(f"{self.player.nickname}, choose X or O: ")
             if self.player.action == "X":
                 self.npc.action = "O"
-
             elif self.player.action == "O":
                 self.npc.action = "X"
-
             else:
                 print("only choose X or O")
                 continue
@@ -84,12 +80,22 @@ class Game:
                 )
                 have_action = True
                 round_finished = self.round()
-
                 if round_finished:
                     have_action = False
+            self.play_again()
+
+    def play_again(self):
+        while True:
+            restart = input("Do you want to play again? (y/n): ")
+            if restart == "y":
+                self.intro()
+                break
+            elif restart == "n":
+                exit("Thanks for playing!")
+            else:
+                print("Please enter y or n")
 
     def check_winner(self, field):
-
         board = [cell for row in field.plain for cell in row]
         for combo in self.WINNING_COMBOS:
             if board[combo[0]] == board[combo[1]] == board[combo[2]] != "_":
@@ -101,10 +107,8 @@ class Game:
     def round(self, ):
         field = Field()
         while True:
-
             input_ok = False
             while not input_ok:
-
                 field.display_plain()
                 position = input(f"{self.player.nickname} choose a position 1-9: ")
                 if not position.isnumeric() or int(position) < 1 or int(position) > 9:
@@ -119,28 +123,24 @@ class Game:
                         if winner == "Draw":
                             print("it's a tie!")
                         else:
-
                             print(f"{self.player.nickname} wins!")
-
                         return True
 
                 else:
-
                     print("Invalid! Try again.")
-            npc_input_ok = False
-            while not npc_input_ok:
-                npc_position = self.npc.get_random_action()
-                if field.check_coordinate(npc_position, self.npc.action):
-                    npc_input_ok = True
-                    winner = self.check_winner(field)
-                    if winner:
-                        field.display_plain()
-                        if winner == "Draw":
-                            print("it's a tie!")
-                        else:
-
-                            print(f"{self.npc.nickname} wins!")
-                        return True
+                npc_input_ok = False
+                while not npc_input_ok:
+                    npc_position = self.npc.npc_make_action()
+                    if field.check_coordinate(npc_position, self.npc.action):
+                        npc_input_ok = True
+                        winner = self.check_winner(field)
+                        if winner:
+                            field.display_plain()
+                            if winner == "Draw":
+                                print("it's a tie!")
+                            else:
+                                print(f"{self.npc.nickname} wins!")
+                                return True
 
 
 print("Welcome to tic tac toe!")
