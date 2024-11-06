@@ -1,4 +1,5 @@
 import random
+import csv
 
 
 class Field:
@@ -58,6 +59,8 @@ class Game:
     def __init__(self, player: Player, npc: Player):
         self.player = player
         self.npc = npc
+        self.player_wins = 0
+        self.npc_wins = 0
         self.intro()
 
     def intro(self):
@@ -91,6 +94,7 @@ class Game:
                 self.intro()
                 break
             elif restart == "n":
+                self.save_results()
                 exit("Thanks for playing!")
             else:
                 print("Please enter y or n")
@@ -124,10 +128,12 @@ class Game:
                             print("it's a tie!")
                         else:
                             print(f"{self.player.nickname} wins!")
+                            self.player_wins += 1
                         return True
 
                 else:
                     print("Invalid! Try again.")
+
                 npc_input_ok = False
                 while not npc_input_ok:
                     npc_position = self.npc.npc_make_action()
@@ -140,7 +146,14 @@ class Game:
                                 print("it's a tie!")
                             else:
                                 print(f"{self.npc.nickname} wins!")
+                                self.npc_wins += 1
                                 return True
+
+    def save_results(self):
+        with open("record.csv", mode="a", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow([self.player.nickname, self.player_wins, " - ", self.npc.nickname, self.npc_wins])
+            print(f"Results saved: {self.player.nickname} {self.player_wins} - {self.npc.nickname} {self.npc_wins}")
 
 
 print("Welcome to tic tac toe!")
