@@ -61,6 +61,7 @@ class Game:
         self.npc = npc
         self.player_wins = 0
         self.npc_wins = 0
+        self.tie = 0
         self.intro()
 
     def intro(self):
@@ -126,6 +127,7 @@ class Game:
                         field.display_plain()
                         if winner == "Draw":
                             print("it's a tie!")
+                            self.tie += 1
                         else:
                             print(f"{self.player.nickname} wins!")
                             self.player_wins += 1
@@ -144,6 +146,7 @@ class Game:
                             field.display_plain()
                             if winner == "Draw":
                                 print("it's a tie!")
+                                self.tie += 1
                             else:
                                 print(f"{self.npc.nickname} wins!")
                                 self.npc_wins += 1
@@ -152,8 +155,9 @@ class Game:
     def save_results(self):
         with open("record.csv", mode="a", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow([self.player.nickname, self.player_wins, " - ", self.npc.nickname, self.npc_wins])
-            print(f"Results saved: {self.player.nickname} {self.player_wins} - {self.npc.nickname} {self.npc_wins}")
+            writer.writerow([self.player.nickname, self.player_wins, self.tie, self.npc.nickname, self.npc_wins])
+            print(
+                f"Results saved: {self.player.nickname} {self.player_wins} {self.tie} {self.npc.nickname} {self.npc_wins}")
 
 
 print("Welcome to tic tac toe!")
