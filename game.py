@@ -54,13 +54,17 @@ class Player:
 
         for combo in Game.WINNING_COMBOS:
             print(board, "BOARDDDD")
-            positions = [board[i] for i in combo]
+            positions = []
+            for i in combo:
+                positions.append(board[i])
 
             if player_action not in positions:
                 print(positions, "POSITIONSSS")
-            for board_element in board:
-                possible_move.append(board_element)
+                print(positions[random.randint(0, len(positions) - 1)], "NPC POSITION")
+                return positions[random.randint(0, len(positions) - 1)]
 
+            # for board_element in board:
+            #     possible_move.append(board_element)
 
             # print(winning_position, "winning position")
             # for plain in field.plain:
@@ -70,7 +74,7 @@ class Player:
             #         print("players position", position)
             #         possible_move.append(plain[position[1]])
 
-        return random.choice(range(1, 9))
+
 
 
 class Game:
