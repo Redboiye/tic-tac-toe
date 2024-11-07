@@ -17,6 +17,9 @@ class Field:
             ["7", "8", "9"],
         ]
 
+    def get_flat_board(self):
+        return [cell for row in self.plain for cell in row]
+
     def display_plain(self):
         x, y, z = 1, 2, 3
 
@@ -40,12 +43,33 @@ class Field:
 class Player:
 
     def __init__(self, nickname, is_npc=False):
+        self.player = None
         self.is_npc = is_npc
         self.nickname = nickname
         self.action = None
 
-    @staticmethod
-    def npc_make_action():
+    def npc_make_action(self, field, player_action):
+        possible_move = []
+        board = field.get_flat_board()
+
+        for combo in Game.WINNING_COMBOS:
+            print(board, "BOARDDDD")
+            positions = [board[i] for i in combo]
+
+            if player_action not in positions:
+                print(positions, "POSITIONSSS")
+            for board_element in board:
+                possible_move.append(board_element)
+
+
+            # print(winning_position, "winning position")
+            # for plain in field.plain:
+            #     print(plain)
+            #     if plain[winning_position] == "_":
+            #         print(possible_move, "possible_move")
+            #         print("players position", position)
+            #         possible_move.append(plain[position[1]])
+
         return random.choice(range(1, 9))
 
 
@@ -64,8 +88,15 @@ class Game:
         self.tie = 0
         self.intro()
 
+    def coin_flip(self):
+        print("Let's see who goes first...")
+        flip_winner = random.choice([self.player, self.npc])
+        print(f"{flip_winner.nickname} goes first!")
+        return flip_winner
+
     def intro(self):
         have_action = False
+        self.coin_flip()
         while not have_action:
             self.player.action = input(f"{self.player.nickname}, choose X or O: ")
             if self.player.action == "X":
@@ -138,7 +169,7 @@ class Game:
 
                 npc_input_ok = False
                 while not npc_input_ok:
-                    npc_position = self.npc.npc_make_action()
+                    npc_position = self.npc.npc_make_action(field, self.player.action)
                     if field.check_coordinate(npc_position, self.npc.action):
                         npc_input_ok = True
                         winner = self.check_winner(field)
