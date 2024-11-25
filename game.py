@@ -73,9 +73,12 @@ class Player:
         return str(random.choice(self.get_available_moves(board)))
 
     def choose_action(self, field):
-        if random.random() < 0.5:
-            return self.npc_make_action(field)
-        return self.npc_random_action(field)
+        if random.random() == 0:
+            print(f"npc action {self.npc_random_action(field)}")
+            return self.npc_random_action(field)
+        return self.npc_make_action(field)
+
+
 
     @staticmethod
     def who_goes_first(player_1x, player_2y):
