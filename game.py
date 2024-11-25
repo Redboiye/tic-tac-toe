@@ -1,5 +1,6 @@
 import random
 import csv
+import os
 
 
 class Field:
@@ -96,6 +97,22 @@ class Game:
         self.npc_wins = 0
         self.tie = 0
         self.intro()
+        self.last_match_number = None
+
+        file_name = "record.csv"
+        if not os.path.exists(file_name):
+            with open(file_name, "w", newline="\n") as f:
+                writer = csv.writer(f)
+                header = ["Nickname", "Player_Wins", "Tie", "NPC", "NPC_Wins"]
+                writer.writerow(header)
+        else:
+            with open("record.csv", "r") as f:
+                reader = csv.reader(f)
+                for row in reader:
+                    last_row = row
+                    print(last_row[0])
+
+            self.last_match_number = int(last_row[0])
 
     def intro(self):
         have_action = False
@@ -117,6 +134,7 @@ class Game:
                 have_action = True
                 first_player = Player.who_goes_first(self.player, self.npc)
                 self.round(first_player)
+            self.play_again()
 
     def play_again(self):
         while True:
@@ -189,13 +207,16 @@ class Game:
     def save_results(self):
         with open("record.csv", mode="a", newline="") as f:
             writer = csv.writer(f)
+            records = [self.last_match_number, self.player.nickname, self.player_wins, self.tie, self.npc_wins]
             writer.writerow(
                 [self.player.nickname,
                  self.player_wins,
                  self.tie,
                  self.npc.nickname,
-                 self.npc_wins]
+                 self.npc_wins],
+
             )
+            writer.writerow(records)
             print(
                 f"Results saved: {self.player.nickname} {self.player_wins}"
                 f" {self.tie} {self.npc.nickname} {self.npc_wins}"
