@@ -41,18 +41,19 @@ class Player:
 
     def npc_make_action(self, field):
         board = field.get_flat_board()
-        for combo in Game.WINNING_COMBOS:
-            positions = [board[i] for i in combo]
-            if positions.count(self.action) == 2 and positions.count('_') == 1:
-                move = combo[positions.index('_')] + 1
-                return str(move)
-
         opponent_action = 'O' if self.action == 'X' else 'X'
+
         for combo in Game.WINNING_COMBOS:
             positions = [board[i] for i in combo]
-            if positions.count(opponent_action) == 2 and positions.count('_') == 1:
-                move = combo[positions.index('_')] + 1
-                return str(move)
+            if positions.count('_') == 1:
+                empty_index = positions.index('_')
+                move = combo[empty_index] + 1
+
+                if positions.count(self.action) == 2:
+                    return str(move)
+
+                if positions.count(opponent_action) == 2:
+                    return str(move)
 
         if board[4] == '_':
             return '5'
