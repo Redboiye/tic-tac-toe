@@ -62,24 +62,24 @@ class Player:
             if board[i] == '_':
                 return str(i + 1)
 
-        available_moves = [i + 1 for i, cell in enumerate(board) if cell == '_']
-        return str(random.choice(available_moves))
+        return str(random.choice(self.get_available_moves(board)))
 
     @staticmethod
-    def npc_random_action(field):
+    def get_available_moves(board):
+        return [i + 1 for i, cell in enumerate(board) if cell == '_']
+
+    def npc_random_action(self, field):
         board = field.get_flat_board()
-        available_moves = [i + 1 for i, cell in enumerate(board) if cell == '_']
-        return str(random.choice(available_moves))
+        return str(random.choice(self.get_available_moves(board)))
 
     def choose_action(self, field):
         if random.random() < 0.5:
             return self.npc_make_action(field)
-        else:
-            return self.npc_random_action(field)
+        return self.npc_random_action(field)
 
     @staticmethod
-    def who_goes_first(player_1, player_2):
-        first = random.choice([player_1, player_2])
+    def who_goes_first(player_1x, player_2y):
+        first = random.choice([player_1x, player_2y])
         print(f"{first.nickname} goes first!")
         return first
 
@@ -97,8 +97,7 @@ class Game:
         self.player_wins = 0
         self.npc_wins = 0
         self.tie = 0
-        self.intro()
-        self.last_match_number = None
+        self.last_match_number = 0
 
         file_name = "record.csv"
         if not os.path.exists(file_name):
@@ -111,9 +110,10 @@ class Game:
                 reader = csv.reader(f)
                 for row in reader:
                     last_row = row
-                    print(last_row[0])
+                    print(last_row)
 
             self.last_match_number = int(last_row[0])
+        self.intro()
 
     def intro(self):
         have_action = False
@@ -208,16 +208,20 @@ class Game:
     def save_results(self):
         with open("record.csv", mode="a", newline="") as f:
             writer = csv.writer(f)
-            records = [self.last_match_number, self.player.nickname, self.player_wins, self.tie, self.npc_wins]
+            self.last_match_number += 1
+
             writer.writerow(
-                [self.player.nickname,
-                 self.player_wins,
-                 self.tie,
-                 self.npc.nickname,
-                 self.npc_wins],
+                [
+                    self.last_match_number,
+                    self.player.nickname,
+                    self.player_wins,
+                    self.tie,
+                    self.npc.nickname,
+                    self.npc_wins
+                ],
 
             )
-            writer.writerow(records)
+
             print(
                 f"Results saved: {self.player.nickname} {self.player_wins}"
                 f" {self.tie} {self.npc.nickname} {self.npc_wins}"
